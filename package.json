@@ -1,0 +1,22 @@
+{
+  "name": "lp-store",
+  "productName": "LP Store",
+  "version": "0.1.0",
+  "description": "LP Store: un solo lugar para instalar y actualizar las apps LP publicadas en GitHub",
+  "author": "mmunozpatino",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "dev": "node scripts/dev-server.mjs",
+    "apk": "node scripts/build-apk.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^8.6.0",
+    "@capacitor/cli": "^8.6.0",
+    "@capacitor/core": "^8.6.0"
+  }
+}

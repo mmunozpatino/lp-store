@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <!-- La pantalla no habla con GitHub: el catálogo y las descargas los resuelve la parte nativa. -->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; connect-src 'self'; img-src 'self' data:; style-src 'self'">
+  <meta name="color-scheme" content="light dark">
+  <title>LP Store</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <img class="brand-icon" src="icon.svg" alt="">
+      <h1>LP Store</h1>
+    </div>
+    <div class="topbar-actions">
+      <button id="refresh" class="icon-button" aria-label="Buscar versiones nuevas">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.65 6.35A7.96 7.96 0 0 0 12 4a8 8 0 1 0 7.73 10h-2.08A6 6 0 1 1 12 6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+      </button>
+      <button id="open-settings" class="icon-button" aria-label="Ajustes">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.4 13a7.5 7.5 0 0 0 0-2l2-1.6-2-3.4-2.4 1a7.6 7.6 0 0 0-1.7-1L15 3.5h-4l-.4 2.5a7.6 7.6 0 0 0-1.7 1l-2.4-1-2 3.4L6.6 11a7.5 7.5 0 0 0 0 2l-2 1.6 2 3.4 2.4-1a7.6 7.6 0 0 0 1.7 1l.4 2.5h4l.4-2.5a7.6 7.6 0 0 0 1.7-1l2.4 1 2-3.4zM12 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="hero">
+      <p class="eyebrow">Tus apps</p>
+      <p id="status" class="status" aria-live="polite"></p>
+      <div id="summary" class="summary"></div>
+    </section>
+    <div id="apps" class="apps"></div>
+  </main>
+
+  <!-- Detalle de una app -->
+  <dialog id="app-dialog" class="sheet">
+    <header class="sheet-header">
+      <span></span>
+      <button class="icon-button" data-close aria-label="Cerrar">✕</button>
+    </header>
+    <div id="app-dialog-body" class="sheet-body"></div>
+  </dialog>
+
+  <!-- Ajustes -->
+  <dialog id="settings" class="sheet">
+    <header class="sheet-header">
+      <h2>Ajustes</h2>
+      <button class="icon-button" data-close aria-label="Cerrar">✕</button>
+    </header>
+    <div class="sheet-body">
+      <section class="card">
+        <h3>Catálogo</h3>
+        <p class="hint">Aparecen solas todas las apps públicas de GitHub que tienen un APK en su última versión.</p>
+        <p id="catalog-status" class="hint"></p>
+      </section>
+
+      <section class="card">
+        <h3>Versión de LP Store</h3>
+        <p id="version-text" class="hint"></p>
+        <p id="update-status" class="hint" aria-live="polite"></p>
+        <div class="button-row">
+          <button id="check-updates" class="button" type="button">Buscar actualizaciones</button>
+          <button id="install-update" class="button primary" type="button" hidden>Actualizar ahora</button>
+        </div>
+        <div id="settings-news"></div>
+      </section>
+    </div>
+  </dialog>
+
+  <!-- Aviso de versión nueva de LP Store -->
+  <dialog id="update-dialog" class="modal">
+    <h2>Hay una versión nueva de LP Store</h2>
+    <p id="update-dialog-text"></p>
+    <div id="update-dialog-notes" class="notes"></div>
+    <p id="update-dialog-progress" class="hint" aria-live="polite"></p>
+    <div class="button-row end">
+      <button class="button" data-close type="button">Más tarde</button>
+      <button id="update-dialog-install" class="button primary" type="button">Actualizar ahora</button>
+    </div>
+  </dialog>
+
+  <!-- Novedades de la versión instalada -->
+  <dialog id="news-dialog" class="modal">
+    <h2>Novedades</h2>
+    <div id="news-dialog-body"></div>
+    <div class="button-row end">
+      <button class="button primary" data-close type="button">Listo</button>
+    </div>
+  </dialog>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

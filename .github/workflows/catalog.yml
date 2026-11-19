@@ -1,0 +1,51 @@
+# Arma el catálogo de apps que muestra LP Store: todos los repos públicos de la dueña cuya última versión trae un
+# APK. Lo publica como catalog.json en la versión "catalogo" (marcada como pre-release, así no cuenta como la última
+# versión de LP Store). Los celulares lo bajan de ahí, sin gastar consultas de la API de GitHub.
+name: Catálogo
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+  workflow_run:
+    workflows: [Versión]
+    types: [completed]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: catalog
+  cancel-in-progress: false
+
+jobs:
+  catalog:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Versión "catalogo"
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if ! gh release view catalogo --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
+            gh release create catalogo --repo "$GITHUB_REPOSITORY" --prerelease --latest=false \
+              --title "Catálogo de apps" \
+              --notes "Lista de apps que muestra LP Store. La actualiza sola el workflow Catálogo; no es una versión de la app."
+          fi
+          gh release download catalogo --repo "$GITHUB_REPOSITORY" --pattern catalog.json --output "$RUNNER_TEMP/anterior.json" || true
+      - name: Armar catálogo
+        id: build
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          AAPT2="$(ls -d "$ANDROID_HOME"/build-tools/*/ | sort -V | tail -1)aapt2"
+          node scripts/catalog.mjs --owner "$GITHUB_REPOSITORY_OWNER" --aapt2 "$AAPT2" \
+            --previous "$RUNNER_TEMP/anterior.json" --out catalog.json
+      - name: Publicar catálogo
+        if: steps.build.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload catalogo catalog.json --repo "$GITHUB_REPOSITORY" --clobber

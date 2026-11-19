@@ -1,0 +1,10 @@
+{
+  "appId": "ar.lp.store",
+  "appName": "LP Store",
+  "webDir": "ui",
+  "plugins": {
+    "SystemBars": {
+      "style": "DEFAULT"
+    }
+  }
+}
