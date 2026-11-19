@@ -312,7 +312,9 @@ dialog::backdrop { background: rgba(4, 4, 8, 0.7); backdrop-filter: blur(3px); }
 }
 .detail-name { margin: 6px 0 0; font-size: 1.5rem; font-weight: 750; letter-spacing: -0.02em; }
 .detail-description { margin: 2px 0 4px; max-width: 420px; color: var(--text-2); line-height: 1.45; }
-.detail-action { margin-top: 6px; }
+.detail-action { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 6px; }
+.detail-action { width: 100%; max-width: 380px; }
+.detail-action .button.large { flex: 1; min-width: 0; padding-left: 16px; padding-right: 16px; }
 .detail-action:empty { display: none; }
 .detail-hero .progress { width: min(260px, 80%); }
 .progress-text { margin: 0; color: var(--purple-text); font-weight: 650; font-size: 0.88rem; }

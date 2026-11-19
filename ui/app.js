@@ -187,14 +187,25 @@ function actionButton(app, { large = false } = {}) {
   if (state === 'install') return el('button', { class: cls + ' primary', type: 'button', onclick: run }, 'Instalar');
   if (state === 'update') return el('button', { class: cls + ' primary', type: 'button', onclick: run }, 'Actualizar');
   if (isSelf(app)) return el('span', { class: 'tag' }, 'Esta app');
-  if (installedOf(app)?.launchable) {
-    const open = (e) => {
-      e.stopPropagation();
-      Native.launch(app.packageId).catch(() => {});
-    };
-    return el('button', { class: cls + ' soft', type: 'button', onclick: open }, 'Abrir');
-  }
-  return null;
+  return openButton(app, cls);
+}
+
+/** "Abrir" si la app está instalada y se puede abrir (no para LP Store misma). null si no. */
+function openButton(app, cls) {
+  if (isSelf(app) || !installedOf(app)?.launchable) return null;
+  const open = (e) => {
+    e.stopPropagation();
+    Native.launch(app.packageId).catch((error) => showToast(error.message || 'No se pudo abrir la app.', true));
+  };
+  return el('button', { class: cls + ' soft', type: 'button', onclick: open }, 'Abrir');
+}
+
+/** Botones del detalle: el principal y, si la app ya está instalada y el principal no es "Abrir", también "Abrir". */
+function detailButtons(app) {
+  const main = actionButton(app, { large: true });
+  const state = appState(app, installedOf(app));
+  const extra = state === 'update' || state === 'dev' ? openButton(app, 'button large') : null;
+  return [main, extra].filter(Boolean);
 }
 
 function progressBar(app) {
@@ -309,7 +320,7 @@ function fillDetail(app) {
         el('h2', { class: 'detail-name' }, app.name),
         el('span', { class: `pill ${state}` }, STATE_LABEL[state]),
         app.description ? el('p', { class: 'detail-description' }, app.description) : null,
-        el('div', { class: 'detail-action' }, actionButton(app, { large: true })),
+        el('div', { class: 'detail-action' }, detailButtons(app)),
         progressBar(app),
         step ? el('p', { class: 'progress-text', 'aria-live': 'polite' }, step.text) : null,
       ),
